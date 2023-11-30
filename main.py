@@ -1,6 +1,6 @@
 import sys
-import process_data
-import display
+import mouse_runner.code.process_data as process_data
+import mouse_runner.code.display as display
 
 def main(dsp_class: display.DSP_Screen_Class, prc_class: process_data.PCS_Data_Class):
     try:
