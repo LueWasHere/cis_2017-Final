@@ -1,5 +1,7 @@
 from time import gmtime
 from random import randint, uniform
+from random import seed as setSeed
+from communications import communcation_class
 
 class PCS_Data_Class:
     """
@@ -11,11 +13,12 @@ class PCS_Data_Class:
     (ARGUMENTS) The class takes no arguments
     """
     
-    def __init__(self) -> None:
+    def __init__(self, inter_class_communications: communcation_class, game_path: str="") -> None:
         self.player_score = 0
         self.player_speed = 0
-        self.player_state = "Running"
+        self.player_state = "start_game"
         
+        # Classic method of using the time as the seed
         local_time = gmtime()
         self.seed = local_time.tm_year+local_time.tm_mon+local_time.tm_mday+local_time.tm_hour+local_time.tm_min+local_time.tm_sec+local_time.tm_wday+local_time.tm_yday
         
@@ -24,14 +27,27 @@ class PCS_Data_Class:
         random_assurance = (~self.seed)**2
         random_assurance_shift = random_assurance<<4
         random_assurance = random_assurance ^ random_assurance_shift
+        # XOR the seed^3 variable with the random_assurance
+        self.seed = (self.seed**int(bin(random_assurance)[2::][::-1][0:5], 2)) ^ random_assurance
         
-        self.seed = self.seed ^ random_assurance
-        print(self.seed)
+        # Save the path for the game
+        self.game_path = game_path
+        
+        setSeed(self.seed)
         
     def reset(self) -> None:
-        
+        self.player_score = 0
+        self.player_speed = 0
+        self.player_state = "start_game"
         return
     
     def check_scores(self) -> None:
-        
+        with open(self.game_path+"\\data\\player\\scores.bin", 'ab') as ScoresFile_Check: ScoresFile_Check.close() # Ensure that the file exists by opening it in append binary mode
+        with open(self.game_path+"\\data\\player\\scores.bin", 'rb') as ScoresFile: # Actual open, in binary mode
+            scores = bytearray(ScoresFile.read())
+            ScoresFile.close()
+            
+        if scores == bytearray():
+            pass
+            
         return

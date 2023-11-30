@@ -1,6 +1,8 @@
 import sys
 import mouse_runner.code.process_data as process_data
 import mouse_runner.code.display as display
+import mouse_runner.code.communications as comms
+from os import path
 
 def main(dsp_class: display.DSP_Screen_Class, prc_class: process_data.PCS_Data_Class):
     try:
@@ -10,7 +12,6 @@ def main(dsp_class: display.DSP_Screen_Class, prc_class: process_data.PCS_Data_C
     
     dsp_class.read_sprites()
     dsp_class.init_display()
-    prc_class.reset()
     prc_class.check_scores()
     
     Game_Running = True
@@ -18,12 +19,14 @@ def main(dsp_class: display.DSP_Screen_Class, prc_class: process_data.PCS_Data_C
     while Game_Running:
         
         Game_Running = dsp_class.check_for_events()
+        
     
     return 0, "EXIT_REQUEST"
 
 if __name__ == "__main__":
-    dsp_class = display.DSP_Screen_Class()
-    prc_class = process_data.PCS_Data_Class()
+    com_class = comms.communcation_class()
+    dsp_class = display.DSP_Screen_Class(game_path=path.abspath("mouse_runner"), inter_class_communications=com_class)
+    prc_class = process_data.PCS_Data_Class(game_path=path.abspath("mouse_runner"), inter_class_communications=com_class)
     
     status, info = main(dsp_class, prc_class)
     
