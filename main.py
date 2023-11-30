@@ -8,8 +8,16 @@ def main(dsp_class: display.DSP_Screen_Class, prc_class: process_data.PCS_Data_C
     except AssertionError:
         return -25, "The current python version is outdated. Python version 3.0 or greater is required for this program"
     
+    dsp_class.read_sprites()
     dsp_class.init_display()
     prc_class.reset()
+    prc_class.check_scores()
+    
+    Game_Running = True
+    
+    while Game_Running:
+        
+        Game_Running = dsp_class.check_for_events()
     
     return 0, "EXIT_REQUEST"
 

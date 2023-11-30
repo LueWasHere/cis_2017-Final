@@ -1,4 +1,5 @@
 from time import gmtime
+from random import randint, uniform
 
 class PCS_Data_Class:
     """
@@ -20,8 +21,17 @@ class PCS_Data_Class:
         
         # Ensure* a random number with binary manipulation
         # * A random number cannot 𝘵𝘳𝘶𝘭𝘺 be acheived. This method simply tries to make it a bit more random
-        random_assurance = ~self.seed
+        random_assurance = (~self.seed)**2
         random_assurance_shift = random_assurance<<4
         random_assurance = random_assurance ^ random_assurance_shift
         
         self.seed = self.seed ^ random_assurance
+        print(self.seed)
+        
+    def reset(self) -> None:
+        
+        return
+    
+    def check_scores(self) -> None:
+        
+        return
