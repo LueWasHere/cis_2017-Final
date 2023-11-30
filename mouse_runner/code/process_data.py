@@ -1,7 +1,7 @@
 from time import gmtime
 from random import randint, uniform
 from random import seed as setSeed
-from communications import communcation_class
+from .communications import communcation_class
 
 class PCS_Data_Class:
     """

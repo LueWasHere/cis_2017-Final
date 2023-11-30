@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import HWSURFACE, DOUBLEBUF, RESIZABLE, VIDEORESIZE, QUIT
-from communications import communcation_class
+from .communications import communcation_class
 
 class DSP_Screen_Class:
     """
@@ -13,7 +13,7 @@ class DSP_Screen_Class:
     def __init__(self, inter_class_communications: communcation_class, game_path: str="") -> None:
         pygame.init()
         
-        self.screen = pygame.display.set_mode((200, 200),HWSURFACE|DOUBLEBUF|RESIZABLE)
+        self.screen = pygame.display.set_mode((700, 500),HWSURFACE|DOUBLEBUF|RESIZABLE)
         self.buffer_screen = self.screen.copy()
         
         self.game_path = game_path
