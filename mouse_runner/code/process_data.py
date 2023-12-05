@@ -16,7 +16,7 @@ class PCS_Data_Class:
     def __init__(self, inter_class_communications: communcation_class, game_path: str="") -> None:
         self.player_score = 0
         self.player_speed = 0
-        self.player_state = "start_game"
+        self.player_state = "sleeping_1"
         
         # Classic method of using the time as the seed
         local_time = gmtime()
@@ -38,8 +38,11 @@ class PCS_Data_Class:
     def reset(self) -> None:
         self.player_score = 0
         self.player_speed = 0
-        self.player_state = "start_game"
+        self.player_state = "sleeping_1"
         return
+    
+    def move_frame_forward(self) -> None:
+        pass
     
     def check_scores(self) -> None:
         with open(self.game_path+"\\data\\player\\scores.bin", 'ab') as ScoresFile_Check: ScoresFile_Check.close() # Ensure that the file exists by opening it in append binary mode

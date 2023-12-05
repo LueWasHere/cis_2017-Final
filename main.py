@@ -1,12 +1,14 @@
-import sys
+from sys import version_info
+from sys import exit as exit_sys
 import mouse_runner.code.process_data as process_data
 import mouse_runner.code.display as display
 import mouse_runner.code.communications as comms
 from os import path
+from time import sleep
 
 def main(dsp_class: display.DSP_Screen_Class, prc_class: process_data.PCS_Data_Class):
     try:
-        assert sys.version_info >= (2, 5)
+        assert version_info >= (2, 5)
     except AssertionError:
         return -25, "The current python version is outdated. Python version 3.0 or greater is required for this program"
     
@@ -18,7 +20,11 @@ def main(dsp_class: display.DSP_Screen_Class, prc_class: process_data.PCS_Data_C
     
     while Game_Running:
         
+        prc_class.move_frame_forward()
+        dsp_class.update_slave(prc_class.player_state)
+        dsp_class.update_master()
         Game_Running = dsp_class.check_for_events()
+        sleep(0.1)
         
     
     return 0, "EXIT_REQUEST"
@@ -34,4 +40,4 @@ if __name__ == "__main__":
         print("Uh-Oh! Looks like something went wrong!\n")
         print(f"Status code: {status}\n\nDebug information: \n{info}")
     
-    sys.exit(status)
+    exit_sys(status)
