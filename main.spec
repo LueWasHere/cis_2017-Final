@@ -31,7 +31,6 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['C:\\Users\\duncan.adam18\\Documents\\final\\cis_2017-Final\\mouse_runner\\data\\sprites\\mouse_landing_fall_sprite.png'],
 )
 coll = COLLECT(
     exe,

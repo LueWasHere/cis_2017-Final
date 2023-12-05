@@ -34,4 +34,4 @@ if __name__ == "__main__":
         print("Uh-Oh! Looks like something went wrong!\n")
         print(f"Status code: {status}\n\nDebug information: \n{info}")
     
-    exit(status)
+    sys.exit(status)
