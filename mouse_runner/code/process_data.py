@@ -30,8 +30,9 @@ class PCS_Data_Class:
         # XOR the seed^3 variable with the random_assurance
         self.seed = (self.seed**int(bin(random_assurance)[2::][::-1][0:5], 2)) ^ random_assurance
         
-        # Save the path for the game
+        # Save the path for the game and set the communications class
         self.game_path = game_path
+        self.inter_class_communications = inter_class_communications        
         
         setSeed(self.seed)
         
@@ -42,7 +43,21 @@ class PCS_Data_Class:
         return
     
     def move_frame_forward(self) -> None:
-        pass
+        if self.player_state != "falling" and self.player_state != "jumping" and self.player_state != "dead":
+            state_char = self.player_state[0]
+            if state_char == 'r' or state_char == 'w':
+                state_frame = int(self.player_state[-1])
+                state_frame_max = 2
+            elif state_char == 's':
+                state_frame = int(self.player_state[-1])
+                state_frame_max = 4
+            
+            if state_frame == state_frame_max:
+                state_frame = 0
+            state_frame += 1
+            
+            
+            self.player_state = self.player_state[0:-1] + str(state_frame)
     
     def check_scores(self) -> None:
         with open(self.game_path+"\\data\\player\\scores.bin", 'ab') as ScoresFile_Check: ScoresFile_Check.close() # Ensure that the file exists by opening it in append binary mode
@@ -52,5 +67,15 @@ class PCS_Data_Class:
             
         if scores == bytearray():
             pass
+            
+        return
+    
+    def check_controls(self) -> None:
+        if (self.inter_class_communications.controls_state & 0b01) == 0b01:
+            self.reset()
+            self.inter_class_communications.controls_state = self.inter_class_communications.controls_state ^ 0b01
+        elif (self.inter_class_communications.controls_state & 0b10) == 0b10:
+            self.player_state = "jumping"
+            self.inter_class_communications.controls_state = self.inter_class_communications.controls_state ^ 0b10
             
         return

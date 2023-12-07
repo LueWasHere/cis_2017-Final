@@ -1,5 +1,5 @@
 import pygame
-from pygame.locals import HWSURFACE, DOUBLEBUF, RESIZABLE, VIDEORESIZE, QUIT
+from pygame.locals import HWSURFACE, DOUBLEBUF, RESIZABLE, VIDEORESIZE, QUIT, KEYDOWN, K_SPACE, K_ESCAPE
 from .communications import communcation_class
 from os import listdir
 
@@ -22,6 +22,7 @@ class DSP_Screen_Class:
         
         pygame.display.set_caption("Mouse Runner")
         
+        self.inter_class_communications = inter_class_communications
         self.game_path = game_path
     
     def init_display(self) -> None:
@@ -57,11 +58,13 @@ class DSP_Screen_Class:
             "sleeping_1": "mouse_sleeping_frame_1.png", 
             "sleeping_2": "mouse_sleeping_frame_2.png",
             "sleeping_3": "mouse_sleeping_frame_3.png",
-            "waking_1": "mouse_wakingup_frame_1.png",
-            "waking_2": "mouse_wakingup_frame_2.png",
+            "sleeping_4": "mouse_sleeping_frame_4.png",
+            "walking_1": "mouse_wakingup_frame_1.png",
+            "walking_2": "mouse_wakingup_frame_2.png",
             "dead": "mouse_dead_sprite.png",
         }
         
+        print(player_state)
         self.buffer_screen.blit(self.mouse_sprites[decode_state[player_state]], (133, 200))
         
     def check_for_events(self) -> bool:
@@ -71,5 +74,10 @@ class DSP_Screen_Class:
                 return False
             elif event.type == VIDEORESIZE:
                 self.screen = pygame.display.set_mode(event.size, HWSURFACE|DOUBLEBUF|RESIZABLE)
-                
+            elif event.type == KEYDOWN:
+                if event.key == K_SPACE:
+                    self.inter_class_communications.controls_state = self.inter_class_communications.controls_state | 0b10
+                elif event.key == K_ESCAPE:
+                    self.inter_class_communications.controls_state = self.inter_class_communications.controls_state | 0b01
+            
         return True

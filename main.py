@@ -18,9 +18,11 @@ def main(dsp_class: display.DSP_Screen_Class, prc_class: process_data.PCS_Data_C
     
     Game_Running = True
     
+    prc_class.player_state = "running_1"
+    
     while Game_Running:
-        
         prc_class.move_frame_forward()
+        prc_class.check_controls()
         dsp_class.update_slave(prc_class.player_state)
         dsp_class.update_master()
         Game_Running = dsp_class.check_for_events()

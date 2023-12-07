@@ -1,3 +1,5 @@
 class communcation_class():
     def __init__(self) -> None:
-        global_kill = ("ALIVE", 0)
+        self.global_kill = ("ALIVE", 0)
+                        # Jump Reset
+        self.controls_state = 0b00
