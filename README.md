@@ -1,4 +1,5 @@
 # cis_2017-Final
+By Adam Duncan, Jessica Ayala, and Izsabella Mendez
 
 ![:proj](https://icelink.cf/get/@:proj)
 
