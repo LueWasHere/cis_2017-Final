@@ -1,7 +1,7 @@
 from time import gmtime, time
 from random import choice, randint
 from random import seed as setSeed
-from .communications import communcation_class
+from .communications import communication_class
 
 class PCS_Data_Class:
     """
@@ -10,18 +10,24 @@ class PCS_Data_Class:
     (DESCRIPTION) Shortened from "Process_Data_Class", this contains all the methods and data that is needed to calculate functions relating to player score, speed, and death
     as well as being able to process the obstacles in the game
     
-    (ARGUMENTS) The class takes no arguments
+    (ARGUMENTS)
+    
+    (CLASS(communication_class)) inter_class_communications (DESCRIPTION) The class used for communication between classes
+    (STRING) game_path (DESCRIPTION) Where the game is stored on the hard drive.
     """
     
-    def __init__(self, inter_class_communications: communcation_class, game_path: str="") -> None:
+    def __init__(self, inter_class_communications: communication_class, game_path: str="") -> None: # Inital constructor
+        # Initialize player
         self.player_score = 0
-        self.player_speed = 0
         self.player_state = "sleeping_1"
         self.player_y = 0
         self.player_falling = False
+        
+        # Initialize start time and last score
         self.start_time = time()
         self.last_score = 0
 
+        # Initialize sprites
         self.tile_states = [[], [], [], [], [], [], [], []]
         self.obstacles = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.tile_offset_x = 0
@@ -45,9 +51,19 @@ class PCS_Data_Class:
         setSeed(self.seed)
         
     def reset(self) -> None:
+        """
+        (FUNCTION) reset
+        
+        (DESCRIPTION) Reset all values to default.
+        
+        (ARGUMENTS) The function takes no arguments
+
+        (RETURNS) The function returns nothing
+        """
+        
+        # Reset all values to default
         self.last_score = self.player_score
         self.player_score = 0
-        self.player_speed = 0
         self.player_state = "running_1"
         self.player_y = 0
         self.player_falling = False
@@ -67,9 +83,19 @@ class PCS_Data_Class:
         return
     
     def move_frame_forward(self) -> None:
-        if self.player_state == "dead": return
+        """
+        (FUNCTION) move_frame_forward
         
-        if self.player_state != "falling" and self.player_state != "jumping":
+        (DESCRIPTION) Update the posistion of the background and the frame of the player
+        
+        (ARGUMENTS) The function takes no arguments
+
+        (RETURNS) The function returns nothing
+        """
+        
+        if self.player_state == "dead": return # Don't do anything if we're dead
+        
+        if self.player_state != "falling" and self.player_state != "jumping": # If we're running 
             state_char = self.player_state[0]
             if state_char == 'r' or state_char == 'w':
                 state_frame = int(self.player_state[-1])
@@ -84,20 +110,21 @@ class PCS_Data_Class:
             
             
             self.player_state = self.player_state[0:-1] + str(state_frame)
-        elif self.player_state == "jumping":
-            self.player_y += 15
-            if self.player_y > 40:
+        elif self.player_state == "jumping": # If we're jumping
+            self.player_y += 15 # Update the y
+            if self.player_y > 40: # Change states if the y is enough
                 self.player_state = "falling"
-        elif self.player_state == "falling":
-            self.player_y -= 15
-            if self.player_y == 0:
+        elif self.player_state == "falling": # Update the y
+            self.player_y -= 15 # Update the y
+            if self.player_y == 0: # Change states if the y is 0
                 self.player_state = "running_1"
 
+        # Scroll tiles
         self.inter_class_communications.tile_states = self.tile_states
         self.inter_class_communications.player_y = self.player_y
         self.player_score += 1
         self.tile_offset_x += 16 + ((time()-self.start_time)*0.001*(self.player_score*0.1))
-        if self.tile_offset_x > 31:
+        if self.tile_offset_x > 31: # Remove invisible tiles if they're scrolled enough
             self.obstacles.pop(0)
             if randint(0, 1):
                 if self.obstacles[9:12] == [0, 0, 0]:
@@ -118,19 +145,41 @@ class PCS_Data_Class:
         self.inter_class_communications.tile_offset_x = self.tile_offset_x
     
     def check_controls(self) -> None:
-        if (self.inter_class_communications.controls_state & 0b01) == 0b01:
+        """
+        (FUNCTION) check_controls
+        
+        (DESCRIPTION) Check the state of the controls and act accordingly.
+        
+        (ARGUMENTS) The function takes no arguments
+
+        (RETURNS) The function returns nothing
+        """
+
+        if (self.inter_class_communications.controls_state & 0b01) == 0b01: # The esc key was pressed
             self.reset()
             self.inter_class_communications.controls_state = self.inter_class_communications.controls_state ^ 0b01
-        elif (self.inter_class_communications.controls_state & 0b10) == 0b10 and self.player_state != "jumping" and self.player_state != "falling" and self.player_state != "dead":
+        elif (self.inter_class_communications.controls_state & 0b10) == 0b10 and self.player_state != "jumping" and self.player_state != "falling" and self.player_state != "dead": # The jump key was pressed and we're not dead or already jumping
             self.player_state = "jumping"
             self.inter_class_communications.controls_state = self.inter_class_communications.controls_state ^ 0b10
             
         return
     
     def check_collision(self) -> None:
+        """
+        (FUNCTION) check_collision
+        
+        (DESCRIPTION) Check for collisions.
+        
+        (ARGUMENTS) The function takes no arguments
+
+        (RETURNS) The function returns nothing
+        """
+        
+        # Loop through all the obstacles
         for i, obstacle in enumerate(self.obstacles):
-            if obstacle != 0:
-                if i*32-self.tile_offset_x in range(133, 133+32) and self.player_y < 32:
+            if obstacle != 0: # If we're not looking at a null object
+                if i*32-self.tile_offset_x in range(133, 133+32) and self.player_y < 32: # The first condition checks if the mouse shares an X coordinate with
+                                                                                         # the obstacle. The second checks if the mouse shares a Y coordinate.
                     self.player_state = "dead"
 
         return
