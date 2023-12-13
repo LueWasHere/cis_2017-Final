@@ -3,8 +3,19 @@ from sys import exit as exit_sys
 import mouse_runner.code.process_data as process_data
 import mouse_runner.code.display as display
 import mouse_runner.code.communications as comms
-from os import path
+from os import path, system
+from platform import system as os_system
 from time import sleep
+from colorama import Cursor
+
+def clear_terminal() -> None:
+    if os_system() == "Windows":
+        system("cls")
+        return
+    
+    system("clear")
+
+    return
 
 def main(dsp_class: display.DSP_Screen_Class, prc_class: process_data.PCS_Data_Class):
     try:
@@ -20,7 +31,11 @@ def main(dsp_class: display.DSP_Screen_Class, prc_class: process_data.PCS_Data_C
     
     prc_class.player_state = "running_1"
     
+    clear_terminal()
+
     while Game_Running:
+        print(f"{Cursor.POS(1, 1)}Your score is: {prc_class.player_score}{' ' * len(str(prc_class.last_score))}")
+        
         prc_class.move_frame_forward()
         prc_class.check_controls()
         dsp_class.update_slave(prc_class.player_state)

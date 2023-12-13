@@ -20,6 +20,7 @@ class PCS_Data_Class:
         self.player_y = 0
         self.player_falling = False
         self.start_time = time()
+        self.last_score = 0
 
         self.tile_states = [[], [], [], [], [], [], [], []]
         self.obstacles = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -44,6 +45,7 @@ class PCS_Data_Class:
         setSeed(self.seed)
         
     def reset(self) -> None:
+        self.last_score = self.player_score
         self.player_score = 0
         self.player_speed = 0
         self.player_state = "running_1"
@@ -128,7 +130,6 @@ class PCS_Data_Class:
     def check_collision(self) -> None:
         for i, obstacle in enumerate(self.obstacles):
             if obstacle != 0:
-                print(self.player_y)
                 if i*32-self.tile_offset_x in range(133, 133+32) and self.player_y < 32:
                     self.player_state = "dead"
 

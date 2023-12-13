@@ -42,7 +42,6 @@ class DSP_Screen_Class:
                 self.cat_cutscene_sprites[sprite_file] = pygame.transform.scale(pygame.image.load(f'mouse_runner/data/sprites/{sprite_file}').convert_alpha(), (32, 32))
             elif sprite_file[0:5] == "floor" or sprite_file[0:5] == "wood_":
                 self.background_sprites[sprite_file] = pygame.transform.scale(pygame.image.load(f'mouse_runner/data/sprites/{sprite_file}').convert_alpha(), (32, 32))
-            print(sprite_file[0:9])
         self.inter_class_communications.background_sprites = self.background_sprites
         return
     
