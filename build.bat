@@ -1,6 +1,6 @@
 @echo off
 
-python -m PyInstaller --windowed --icon=mouse_runner/data/icon/mouse_landing_fall_sprite.ico --noconfirm main.py
-mkdir C:\Users\duncan.adam18\Documents\final\cis_2017-Final\dist\main\mouse_runner
-mkdir C:\Users\duncan.adam18\Documents\final\cis_2017-Final\dist\main\mouse_runner\data
-Xcopy /E /I C:\Users\duncan.adam18\Documents\final\cis_2017-Final\mouse_runner\data\ C:\Users\duncan.adam18\Documents\final\cis_2017-Final\dist\main\mouse_runner\data\
+python -m PyInstaller --icon=mouse_runner/data/icon/mouse_landing_fall_sprite.ico --noconfirm main.py
+mkdir ..\dist\main\mouse_runner
+mkdir ..\dist\main\mouse_runner\data
+Xcopy /E /I ..\mouse_runner\data\ ..\dist\main\mouse_runner\data\
