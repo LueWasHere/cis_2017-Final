@@ -14,7 +14,7 @@ class DSP_Screen_Class:
     def __init__(self, inter_class_communications: communcation_class, game_path: str="") -> None:
         pygame.init()
         
-        self.screen = pygame.display.set_mode((400, 300),HWSURFACE|DOUBLEBUF|RESIZABLE)
+        self.screen = pygame.display.set_mode((400, 320),HWSURFACE|DOUBLEBUF|RESIZABLE)
         self.buffer_screen = self.screen.copy()
         
         self.ICON = pygame.image.load('mouse_runner/data/icon/mouse_landing_fall_sprite.ico').convert_alpha()
@@ -34,12 +34,16 @@ class DSP_Screen_Class:
         self.mouse_sprites = dict()
         self.cat_cutscene_sprites = dict()
         self.cat_sprites = dict()
+        self.background_sprites = dict()
         for sprite_file in listdir("mouse_runner/data/sprites"):
             if sprite_file[0:5] == "mouse":
-                self.mouse_sprites[sprite_file] = pygame.transform.scale(pygame.image.load(f'mouse_runner/data/sprites/{sprite_file}').convert_alpha(), (16, 16))
-            elif sprite_file[0:9] == "cat_claw" or sprite_file[0:9] == "cat_wall_":
-                self.cat_cutscene_sprites[sprite_file] = pygame.image.load(f'mouse_runner/data/sprites/{sprite_file}').convert_alpha()
-    
+                self.mouse_sprites[sprite_file] = pygame.transform.scale(pygame.image.load(f'mouse_runner/data/sprites/{sprite_file}').convert_alpha(), (32, 32))
+            elif sprite_file[0:9] == "cat_claw_":
+                self.cat_cutscene_sprites[sprite_file] = pygame.transform.scale(pygame.image.load(f'mouse_runner/data/sprites/{sprite_file}').convert_alpha(), (32, 32))
+            elif sprite_file[0:5] == "floor" or sprite_file[0:5] == "wood_":
+                self.background_sprites[sprite_file] = pygame.transform.scale(pygame.image.load(f'mouse_runner/data/sprites/{sprite_file}').convert_alpha(), (32, 32))
+            print(sprite_file[0:9])
+        self.inter_class_communications.background_sprites = self.background_sprites
         return
     
     def update_master(self) -> None:
@@ -48,7 +52,7 @@ class DSP_Screen_Class:
         return
     
     def update_slave(self, player_state) -> None:
-        self.buffer_screen.fill((255, 255, 255))
+        self.buffer_screen.fill((84, 109, 142))
         
         decode_state = {
             "running_1": "mouse_firstfram_walking_1_sprite.png",
@@ -63,9 +67,19 @@ class DSP_Screen_Class:
             "walking_2": "mouse_wakingup_frame_2.png",
             "dead": "mouse_dead_sprite.png",
         }
+
+        for i,row in enumerate(self.inter_class_communications.tile_states):
+            for j,tile in enumerate(row):
+                if i == 7:
+                    self.buffer_screen.blit(self.background_sprites[tile], (j*32-self.inter_class_communications.tile_offset_x, i*32-29))
+                else:
+                    self.buffer_screen.blit(self.background_sprites[tile], (j*32-self.inter_class_communications.tile_offset_x, i*32))
         
-        print(player_state)
-        self.buffer_screen.blit(self.mouse_sprites[decode_state[player_state]], (133, 200))
+        for i,obstacle in enumerate(self.inter_class_communications.obstacles):
+            if obstacle != 0:
+                self.buffer_screen.blit(self.cat_cutscene_sprites[obstacle], (i*32-self.inter_class_communications.tile_offset_x, 197))
+
+        self.buffer_screen.blit(self.mouse_sprites[decode_state[player_state]], (133, 197-self.inter_class_communications.player_y))
         
     def check_for_events(self) -> bool:
         for event in pygame.event.get():

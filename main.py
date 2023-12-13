@@ -13,8 +13,8 @@ def main(dsp_class: display.DSP_Screen_Class, prc_class: process_data.PCS_Data_C
         return -25, "The current python version is outdated. Python version 3.0 or greater is required for this program"
     
     dsp_class.read_sprites()
+    prc_class.reset()
     dsp_class.init_display()
-    prc_class.check_scores()
     
     Game_Running = True
     
@@ -25,6 +25,7 @@ def main(dsp_class: display.DSP_Screen_Class, prc_class: process_data.PCS_Data_C
         prc_class.check_controls()
         dsp_class.update_slave(prc_class.player_state)
         dsp_class.update_master()
+        prc_class.check_collision()
         Game_Running = dsp_class.check_for_events()
         sleep(0.1)
         
